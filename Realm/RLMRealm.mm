@@ -234,12 +234,10 @@ NSData *RLMRealmValidatedEncryptionKey(NSData *key) {
                         }
                     } else {
                         // Failure
-                        // FIXME: we need a less ad-hoc way to turn error codes into NSErrors.
-                        err = [NSError errorWithDomain:RLMSyncErrorDomain
-                                                  code:RLMSyncErrorClientInternalError
-                                              userInfo:@{@"underlying": @(error.value()),
-                                                         @"message": @(error.message().c_str())}];
-                        callback(nil, err);
+                        callback(nil, make_sync_error(RLMSyncSystemErrorKindSession,
+                                                      @(error.message().c_str()),
+                                                      error.value(),
+                                                      nil));
                     }
                 });
             });
